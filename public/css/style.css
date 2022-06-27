@@ -1,0 +1,134 @@
+body{
+    
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+    background: #394292;
+  }
+
+
+/* 
+====================================
+Search Bar Styles
+====================================
+*/
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+.searchSection{
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 24px;
+
+}
+
+.search {
+  /*width: 100%;*/
+  position: relative;
+  display: flex;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 3px solid #A02F9C;
+  border-right: none;
+  padding: 5px;
+  height: 20px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #9DBFAF;
+}
+
+.searchTerm:focus{
+  color: #A02F9C;
+}
+
+.searchButton {
+  width: 40px;
+  height: 36px;
+  border: 1px solid #A02F9C;
+  background: #A02F9C;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.searchSize{
+  width: 30%;
+
+}
+
+/* 
+====================================
+Refresh Button
+====================================
+*/
+
+.refreshButton{
+
+    font-family: "roboto", sans-serif;
+    font-size: 24px;
+    padding: 4px 12px;
+    color: #fff;
+    background: #4ABC7E;
+    border-radius: 15px;
+    width: 99px;
+    text-align: center;
+    cursor: pointer;
+
+}
+
+.refreshButton:hover{
+
+    background: #fff;
+    color: #4ABC7E;
+
+}
+
+.refreshButton:active{
+
+  background: #6D5CD1;
+  color: #fff;
+
+}
+
+/* 
+====================================
+Joke Display
+====================================
+*/
+
+.jokeContainer{
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.jokeCard{
+
+    display: flex;
+    flex-direction: column;
+    background: #6D5CD1;
+    min-width: 400px;
+    max-width: 600px;
+    border-radius: 15px;
+    color: white;
+    text-align: center;
+    min-height: 135px;
+    font-size: 24px;
+    justify-content: center;
+    margin: 24px 0 24px;
+    padding: 16px;
+    
+
+
+}
+
+
+
