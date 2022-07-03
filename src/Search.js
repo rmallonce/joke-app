@@ -1,16 +1,22 @@
-import React from "react";
+import React, {useState} from "react";
+import JokeCard from "./components/JokeCard";
 
-export default function Search(props){
+export default function Search(){
 
-    let jokeCards
+     //disable refresh button when there is no search query saved
+    // Add display for when there is nothing on page
 
-    let results = document.getElementById("results")
+    const [jokeData, setJokeData] = useState([])
 
-    const [jokeData, setJokeData] = React.useState([])
-
-    const [formData, setFormData] = React.useState(
+    const [formData, setFormData] = useState(
         {jokeForm: ""}
-    )
+    ) 
+
+    const [searchQuery, setSearchQuery] = useState("")
+
+    const [loading, setLoading] = useState(false)
+
+    console.log(jokeData)
 /*
 ////////////////////////////////////////
 Fetch Database into jokeData 
@@ -24,25 +30,62 @@ Fetch Database into jokeData
         }
     };
     
-    React.useEffect( () => {
-    fetch(`https://dad-jokes.p.rapidapi.com/joke/search?term=${formData.jokeForm}`, options)
-        .then(res => res.json())
-        .then(data => {
+    const getJokes = async(event) => {
+        event.preventDefault()
+        setLoading(true)
 
+        try{
+            const response = await fetch(`https://dad-jokes.p.rapidapi.com/joke/search?term=${formData.jokeForm}`, options) 
 
-        let index = []
+            const data = await response.json();
 
-        for(let i = 0; i < 3; i++){
+            let index = []
 
-        const randomNumber = Math.floor(Math.random() * data.body.length)
-         index.push(data.body[randomNumber], data.body[randomNumber])
+            for(let i = 0; i < 3; i++){
+
+            const randomNumber = Math.floor(Math.random() * data.body.length)
+
+            index.push(data.body[randomNumber])
             
         }
+            setJokeData(index)
+            setSearchQuery(formData.jokeForm)
 
-        setJokeData(index)
-        console.log(jokeData)
-        })
-    }, [formData])
+        } finally {
+            
+        }
+    }
+
+   const refreshJokes = async(event) => {
+        event.preventDefault()
+        setLoading(true)
+
+        try{
+            const response = await fetch(`https://dad-jokes.p.rapidapi.com/joke/search?term=${searchQuery}`, options) 
+
+            const data = await response.json();
+
+            let index = []
+
+            for(let i = 0; i < 3; i++){
+
+            const randomNumber = Math.floor(Math.random() * data.body.length)
+
+            index.push(data.body[randomNumber])
+            
+        }
+            setJokeData(index)
+
+        } finally {
+           
+        }
+    }
+
+/*
+////////////////////////////////////////
+Track Form Inputs
+////////////////////////////////////////
+*/
 
     function handleChange(event){
         setFormData(prevFormData => {
@@ -53,105 +96,17 @@ Fetch Database into jokeData
         })
     }
 
+    const jokeContent = <div class="jokeContainer">
+                            {jokeData.map(joke =>
+                                <JokeCard
+                                    key = {joke.id}
+                                    setup = {joke.setup}
+                                    punchline = {joke.punchline} 
+                                />
+                            )}
 
-/*
-////////////////////////////////////////
-Display on Submit Code
-////////////////////////////////////////
-*/
-function handleSubmit(event){
-        event.preventDefault()
-       
-       console.log(jokeData)
+                        </div>
 
-       
-
-        results.innerHTML =`
-        <div class="jokeContainer">
-
-            <div id=${jokeData[0].id} class="jokeCard">
-
-                <p>${jokeData[0].setup}</p>
-
-                <p>${jokeData[0].punchline}</p>
-            
-            </div>
-
-            <div id=${jokeData[2].id} class="jokeCard">
-
-                <p>${jokeData[2].setup}</p>
-
-                <p>${jokeData[2].punchline}</p>
-
-            </div>
-
-            <div id=${jokeData[5].id} class="jokeCard">
-
-                <p>${jokeData[5].setup}</p>
-
-                <p>${jokeData[5].punchline}</p>
-
-            </div>
-
-        </div> `
-        
-}
-
-/*
-////////////////////////////////////////
-Refresh Button Code
-////////////////////////////////////////
-*/
-
-function handleRefresh(){
-
-    fetch(`https://dad-jokes.p.rapidapi.com/joke/search?term=${formData.jokeForm}`, options)
-    .then(res => res.json())
-    .then(data => {
-
-
-    let index = []
-
-    for(let i = 0; i < 3; i++){
-
-    const randomNumber = Math.floor(Math.random() * data.body.length)
-     index.push(data.body[randomNumber], data.body[randomNumber])
-        
-    }
-
-    setJokeData(index)    
-
-    })
-
-    results.innerHTML =`
-        <div class="jokeContainer">
-
-            <div id=${jokeData[0].id} class="jokeCard">
-
-                <p>${jokeData[0].setup}</p>
-
-                <p>${jokeData[0].punchline}</p>
-            
-            </div>
-
-            <div id=${jokeData[2].id} class="jokeCard">
-
-                <p>${jokeData[2].setup}</p>
-
-                <p>${jokeData[2].punchline}</p>
-
-            </div>
-
-            <div id=${jokeData[5].id} class="jokeCard">
-
-                <p>${jokeData[5].setup}</p>
-
-                <p>${jokeData[5].punchline}</p>
-
-            </div>`
-}
-
-  
 /*
 ////////////////////////////////////////
 Page Render
@@ -163,7 +118,7 @@ Page Render
             <section className="searchSection">
                 <div className="searchSize">
 
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={getJokes}>
                         <div className="search">
 
                             <input 
@@ -171,7 +126,7 @@ Page Render
                             type="text" 
                             className="searchTerm"
                             onChange={handleChange} 
-                            placeholder="What are you looking for?"
+                            placeholder="What makes you laugh?"
                             />
 
                             <button type="submit" className="searchButton">
@@ -181,12 +136,25 @@ Page Render
                     </form>
                 </div>
 
-                <p id="refreshButton" className="refreshButton" onClick={handleRefresh}>Refresh</p>
+                
+                <button 
+                id="refreshButton" 
+                className="refreshButton"
+                onClick={refreshJokes}
+                disabled={!loading}
+               >
+                    Refresh
+                </button>
             </section>
 
-            <div id="results">
+            {loading ?
 
-            </div>
+                <>{jokeContent}</>
+            
+            :
+
+                <h1 class="jokeHeader">No Results</h1>
+            }
         </>
     )
 
